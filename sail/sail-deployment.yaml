@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sail-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sail-server
+  template:
+    metadata:
+      labels:
+        app: sail-server
+    spec:
+      containers:
+        - name: sail-server
+          image: sail:latest
+          command:
+            ["sail", "spark", "server", "--ip", "0.0.0.0", "--port", "50051"]
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 4040 # UI o Monitoring Port
+            - containerPort: 50051 # gRPC Port
+          env:
+            - name: RUST_LOG
+              value: "debug"
+          volumeMounts:
+            - name: data-volume
+              mountPath: /stage
+      volumes:
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: sail-pvc
