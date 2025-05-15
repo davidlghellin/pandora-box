@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tcp-check-mysql
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: tcp-client
+          image: busybox:1.35.0-uclibc
+          command:
+            [
+              "sh",
+              "-c",
+              "nc -zv mysql-service.default.svc.cluster.local 3306 || echo '❌ Connection Failed'",
+            ]
+
