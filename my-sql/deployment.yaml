@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mysql-pod
+  labels:
+    app: mysql
+spec:
+  containers:
+    - name: mysql
+      image: mysql:latest
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "pass"
+      ports:
+        - containerPort: 3306
+      volumeMounts:
+        - name: mysql-volume
+          mountPath: /var/lib/mysql  # Ruta típica para datos de MySQL
+  volumes:
+    - name: mysql-volume
+      persistentVolumeClaim:
+        claimName: mysql-pvc
+
